@@ -28,4 +28,16 @@ public class ShowerElement : Element
         source.enabled = false;
         water.gameObject.SetActive(false);
     }
+
+    public override void ExecuteRoutine(HumanBehavior human)
+    {
+        base.ExecuteRoutine(human);
+
+    }
+
+    public override void QuitRoutine(HumanBehavior human)
+    {
+        base.QuitRoutine(human);
+
+    }
 }

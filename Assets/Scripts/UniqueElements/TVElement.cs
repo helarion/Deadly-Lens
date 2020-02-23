@@ -14,6 +14,8 @@ public class TVElement : Element
         sr = GetComponentInChildren<SpriteRenderer>();
         l = GetComponentInChildren<Light>();
         source = GetComponent<AudioSource>();
+
+        toggle = l.enabled;
     }
     public override void TurnOn() 
     {
@@ -29,5 +31,18 @@ public class TVElement : Element
         l.enabled = false;
         source.enabled = false;
         base.TurnOff();
+    }
+
+    public override void ExecuteRoutine(HumanBehavior human)
+    {
+        base.ExecuteRoutine(human);
+        if(!human.hasSat)human.SitDown(routineTransform);
+    }
+
+    public override void QuitRoutine(HumanBehavior human)
+    {
+        base.QuitRoutine(human);
+        //if (human.hasSat)
+        human.SitUp();
     }
 }

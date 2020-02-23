@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     List<Camera> listCam;
     [SerializeField] Transform listener;
     [SerializeField] public Transform Elements;
+    [SerializeField] RenderTexture cameraTexture;
+    public bool isOnLaptop = false;
 
     public static GameManager instance = null;
 
@@ -49,9 +51,24 @@ public class GameManager : MonoBehaviour
 
     public void SelectCamera(CameraController c)
     {
+        //activeCamera.ResetZoom();
         activeCamera.StopControl();
         activeCamera = c;
         listener.parent = c.transform;
         c.StartControl();
+    }
+
+    public void UseLaptopElement()
+    {
+        activeCamera.cam.targetTexture = cameraTexture;
+        isOnLaptop = true;
+    }
+
+    public void UseLaptopCamera()
+    {
+        UiManager.instance.DisableCursor();
+        UiManager.instance.DisableLaptopCanvas();
+        activeCamera.cam.targetTexture = null;
+        isOnLaptop = false;
     }
 }

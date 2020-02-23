@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] float speedRotation=50;
     [SerializeField] int maxZoom = 70;
     [SerializeField] int minZoom = 15;
-    [SerializeField] float modifier = 1f;
+    [SerializeField] float zoomModifier = 1f;
     [SerializeField] public Transform camTransform;
     [SerializeField] public bool isControlled = false;
 
@@ -26,6 +26,13 @@ public class CameraController : MonoBehaviour
     float savedXStart;
     float savedYStart;
 
+    public bool inAnimation = false;
+
+    float fovGoal;
+    int fovModifier = 70;
+    float fovSpeed = 0.1f;
+    int fovRange = 5;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,13 +43,19 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isControlled) return;
-        CameraCheck();
-        
+        if (!isControlled || GameManager.instance.isOnLaptop) return;
+        CameraRotation();
+
         xStart = transform.parent.eulerAngles.x+savedXStart;
         yStart = transform.parent.eulerAngles.y+savedYStart;
 
-        print("xstart:" + xStart);
+        //print("xstart:" + xStart);
+    }
+
+    private void LateUpdate()
+    {
+        if (!isControlled || GameManager.instance.isOnLaptop) return;
+        Zoom();
     }
 
     public void Init()
@@ -53,18 +66,12 @@ public class CameraController : MonoBehaviour
         savedYStart = yStart;
     }
 
-    public void CameraCheck()
-    {
-        RotationConstrainMovement();
-        Zoom();
-    }
-
-    void RotationConstrainMovement()
+    public void CameraRotation()
     {
         xPitch -= Input.GetAxis("Mouse Y") * speedRotation;
-        xPitch = Mathf.Clamp(xPitch, yMin, yMax);
+        if(yMin!=-1 && yMax!=-1) xPitch = Mathf.Clamp(xPitch, yMin, yMax);
         yPitch -= Input.GetAxis("Mouse X")*-1 * speedRotation;
-        yPitch = Mathf.Clamp(yPitch, xMin, xMax);
+        if(xMin != -1 && xMax != -1) yPitch = Mathf.Clamp(yPitch, xMin, xMax);
         camTransform.eulerAngles = new Vector3(xPitch+xStart, yPitch+yStart, 0f);
     }
 
@@ -81,23 +88,52 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
         {
-            if (cam.fieldOfView > minZoom) cam.fieldOfView -= modifier;
+            if (cam.fieldOfView > minZoom) cam.fieldOfView -= zoomModifier;
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
         {
-            if (cam.fieldOfView < maxZoom) cam.fieldOfView += modifier;
+            if (cam.fieldOfView < maxZoom) cam.fieldOfView += zoomModifier;
         }
+    }
+
+    public void ResetZoom()
+    {
+        cam.fieldOfView = maxZoom;
     }
 
     public virtual void StartControl()
     {
-        cam.enabled = true;
-        isControlled = true;
+        fovGoal = cam.fieldOfView + fovModifier;
+        StartCoroutine(WaitCameraAnimation(true));
     }
 
     public virtual void StopControl()
     {
-        cam.enabled = false;
-        isControlled = false;
+        //print("current fov:" + cam.fieldOfView);
+        fovGoal = cam.fieldOfView + fovModifier;
+        StartCoroutine(WaitCameraAnimation(false));
+    }
+
+    IEnumerator WaitCameraAnimation(bool control)
+    {
+        inAnimation = true;
+        while(fovGoal - cam.fieldOfView > fovRange)
+        {
+            //print(fovGoal);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fovGoal, fovSpeed);
+            yield return new WaitForEndOfFrame();
+        }
+
+        inAnimation = false;
+        cam.enabled = control;
+        isControlled = control;
+        fovGoal = cam.fieldOfView - fovModifier;
+
+        while (cam.fieldOfView - fovGoal > fovRange)
+        {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fovGoal, fovSpeed);
+            yield return new WaitForEndOfFrame();
+        }
+        if (!isControlled) ResetZoom();
     }
 }

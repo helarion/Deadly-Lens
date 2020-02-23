@@ -10,17 +10,19 @@ public class LampElement : Element
     {
         base.Start();
         l = GetComponentInChildren<Light>();
+        toggle = l.enabled;
+        //print(name + " is toggled : " + toggle);
     }
 
     public override void TurnOn()
     {
         base.TurnOn();
-        l.enabled = false;
+        l.enabled = true;
     }
 
     public override void TurnOff()
     {
         base.TurnOff();
-        l.enabled = true;
+        l.enabled = false;
     }
 }

@@ -8,9 +8,9 @@ public class RobotController : CameraController
     [SerializeField] float movementSpeed;
     [SerializeField] float robotRotationSpeed;
     [SerializeField] Transform hand = null;
+    [SerializeField] ThrowProjectile throwHandler;
 
     [HideInInspector] public GrabObject activeObject=null;
-   // [SerializeField] GameObject save;
 
     Vector3 m_EulerAngleVelocity;
 
@@ -27,9 +27,9 @@ public class RobotController : CameraController
         if (!isControlled) return;
         xStart = transform.eulerAngles.x;
         yStart = transform.eulerAngles.y;
-        CameraCheck();
+        CameraRotation();
         MovementCheck();
-        Throw();
+        ThrowingObject();
     }
 
     void MovementCheck()
@@ -68,18 +68,27 @@ public class RobotController : CameraController
         o.transform.localPosition = new Vector3(0, 0, 0);
         o.transform.eulerAngles = new Vector3(0, 0, 0);
         o.rb.isKinematic = true;
+        o.col.enabled = false;
         activeObject = o;
+        throwHandler.SetObject(activeObject);
 
         UiManager.instance.GrabTextEnabled(false);
     }
 
-    public void Throw()
+    public void ThrowingObject()
     {
-        if (activeObject == null || Input.GetAxisRaw("Throw")==0) return;
-        activeObject.transform.parent = GameManager.instance.Elements;
-        activeObject.rb.useGravity = true;
-        activeObject.rb.isKinematic = false;
-        activeObject.rb.AddForce(transform.forward*100);
-        activeObject = null;
+        if (activeObject != null && Input.GetAxisRaw("Fire2") != 0)
+        {
+            throwHandler.ShowRaycastProjectile();
+            if(Input.GetButtonDown("Fire1"))
+            {
+                throwHandler.Shoot();
+                activeObject = null;
+            }
+        }
+        else
+        {
+            throwHandler.HideRaycastProjectile();
+        }
     }
 }

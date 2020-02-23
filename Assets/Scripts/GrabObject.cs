@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class GrabObject : MonoBehaviour
 {
-    [HideInInspector] public Rigidbody rb;
+    public Rigidbody rb;
+    public Collider col;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponentInChildren<Rigidbody>();
     }
 }

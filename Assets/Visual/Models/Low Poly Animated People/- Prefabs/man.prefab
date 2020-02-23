@@ -437,6 +437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 044845aa5ac9a48489e6eb22fda2d1e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lerpTimeMove: 1
+  lerpTimeRotate: 2
 --- !u!195 &802190659
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -451,7 +453,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 4
+  m_StoppingDistance: 5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -482,8 +484,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1510109276526794}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.005438328, y: -0.000022453698, z: -0.033413954}
+  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4746604889441868}
@@ -700,6 +702,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

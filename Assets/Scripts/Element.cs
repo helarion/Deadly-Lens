@@ -7,32 +7,45 @@ public class Element : MonoBehaviour
 {
     [HideInInspector] public OutlineRegister outline;
     [SerializeField] public bool isTogglable = false;
+    [SerializeField] protected Transform routineTransform;
+    [HideInInspector] public Vector3 routinePosition;
+    [SerializeField] bool isInteractable = true;
     public bool movesCharacter = false;
-    bool toggle = false;
+    public bool toggleMoveValue = true;
+    protected bool toggle = false;
 
     public virtual void Start()
     {
-        outline = GetComponent<OutlineRegister>();
-        outline.enabled = false;
+        if(isInteractable)
+        {
+            outline = GetComponent<OutlineRegister>();
+            if (outline == null) outline = GetComponentInChildren<OutlineRegister>();
+            outline.enabled = false;
+        }
+        if(routineTransform)routinePosition = routineTransform.position;
     }
 
     public void Outline(bool b)
     {
+        if (!isInteractable) return;
         outline.enabled = b;
     }
 
     private void OnMouseOver()
     {
+        if (!isInteractable) return;
         Outline(true);
     }
 
     private void OnMouseExit()
     {
+        if (!isInteractable) return;
         Outline(false);
     }
 
     private void OnMouseDown()
     {
+        if (!isInteractable) return;
         Action();
     }
 
@@ -57,6 +70,17 @@ public class Element : MonoBehaviour
 
     public bool isToggle()
     {
-        return toggle;
+        if(toggle==toggleMoveValue) return true;
+        return false;
+    }
+
+    public virtual void ExecuteRoutine(HumanBehavior human)
+    {
+
+    }
+
+    public virtual void QuitRoutine(HumanBehavior human)
+    {
+
     }
 }

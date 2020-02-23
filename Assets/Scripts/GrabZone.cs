@@ -13,15 +13,17 @@ public class GrabZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        RobotController robot = other.GetComponent<RobotController>();
-        if (robot == null || robot.activeObject !=null) return;
+        if (other.tag != "Robot") return;
+        RobotController robot = other.transform.parent.GetComponent<RobotController>();
+        if (robot == null || !robot.isControlled || robot.activeObject !=null) return;
         UiManager.instance.GrabTextEnabled(true);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        RobotController robot = other.GetComponent<RobotController>();
-        if (robot == null || robot.activeObject != null) return;
+        if (other.tag != "Robot") return;
+        RobotController robot = other.transform.parent.GetComponent<RobotController>();
+        if (robot == null || !robot.isControlled || robot.activeObject != null) return;
         if (Input.GetAxisRaw("Use") != 0)
         {
             robot.Grab(obj);
@@ -30,8 +32,9 @@ public class GrabZone : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        RobotController robot = other.GetComponent<RobotController>();
-        if (robot == null || robot.activeObject != null) return;
+        if (other.tag != "Robot") return;
+        RobotController robot = other.transform.parent.GetComponent<RobotController>();
+        if (robot == null || !robot.isControlled || robot.activeObject != null) return;
         UiManager.instance.GrabTextEnabled(false);
     }
 }
