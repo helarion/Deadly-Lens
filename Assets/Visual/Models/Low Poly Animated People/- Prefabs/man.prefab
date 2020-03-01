@@ -437,8 +437,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 044845aa5ac9a48489e6eb22fda2d1e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lerpTimeMove: 1
-  lerpTimeRotate: 2
+  listRoutine: []
+  timeToSpendInRoutineList: 
+  currentAttentionLevel: 0
 --- !u!195 &802190659
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -719,7 +720,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: 50f4e8bbe8f875e4ab3afd038dc72e1c, type: 3}
+  m_Mesh: {fileID: -5001023371036128681, guid: 3d28c654655048e4da629dfb86b6216a, type: 3}
   m_Bones:
   - {fileID: 4746604889441868}
   - {fileID: 4468768404988026}

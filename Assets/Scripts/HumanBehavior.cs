@@ -3,125 +3,203 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[DefaultExecutionOrder(100)]
 public class HumanBehavior : MonoBehaviour
 {
-    [Header("Routine")]
-    [SerializeField] bool doesRoutine = true;
-    [SerializeField] List<Element> listRoutine;
-    [SerializeField] List<int> timeToSpendInRoutineList;
-    int currentRoutineIndex = 0;
-    float countRoutineTime = 0;
-    bool hasReachedRoutine = false;
+    #region variables
+    [Header("Animation events")]
+    public static readonly int hashSitDown = Animator.StringToHash("SitDown");
+    public static readonly int hashSitUp = Animator.StringToHash("SitUp");
+    public static readonly int hashMove = Animator.StringToHash("IsMoving");
+    public static readonly int hashDefaultAct = Animator.StringToHash("DefaultAct");
+    public static readonly int hashShrug = Animator.StringToHash("Shrug");
 
-    //components
+    [Header("Compnents")]
     Animator anim;
     NavMeshAgent agent;
 
-    List<Element> listElements;
+    [Header("Routine")]
+    [SerializeField] List<Element> listRoutine;
+    [SerializeField] List<int> timeToSpendInRoutineList;
+    bool routineHasActed = false;
+    bool routineHasQuit = false;
+    bool upsetHasActed = false;
+    bool hasShrugged = false;
+    bool hasFixed = false;
 
-    Element objective = null;
-    Element lastObjective = null;
-    bool hasObjective = false;
-    bool isComingBack = false;
-    bool isMoving = false;
-    bool hasActed = false;
-    [HideInInspector]public bool hasSat = false;
-    bool isAnimating = false;
+    int currentRoutineIndex = 0;
+    float countRoutineTime = 0;
+    int timerToReachRoutine = 0;
 
-    // Start is called before the first frame update
+    [Header("AI state")]
+    private AIState currentAIState=AIState.RoutineGoTo;
+    private enum AIState
+    {
+        RoutineGoTo,
+        RoutineAct,
+        RoutineWait,
+        UpsetAct,
+        UpsetGoto,
+        UpsetWait
+    }
+    public int currentAttentionLevel = 0;
+    bool upsetWaitObjective = false;
+
+    [Header("Current Objective")]
+    Transform target;
+    Element currentObjective;
+    Element currentUpset;
+    #endregion
+
+    #region Start Update
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        listElements = new List<Element>();
         anim = GetComponent<Animator>();
-        Element[] temp = FindObjectsOfType<Element>();
-        foreach(Element e in temp)
+
+        currentObjective = listRoutine[currentRoutineIndex];
+        target = currentObjective.routineTransform;
+        currentAttentionLevel = currentObjective.basicAttentionLevel;
+        SceneLinkedSMB<HumanBehavior>.Initialise(anim, this);
+    }
+
+    void Update()
+    {
+        HandlingUpsettingElements();
+        switch(currentAIState)
         {
-            listElements.Add(e);
+            case AIState.RoutineGoTo:
+                if(!hasReachedDestination())
+                {
+                    routineHasActed = false;
+                    routineHasQuit = false;
+                    MoveTo(target.position);
+                }
+                else
+                {
+                    StopMove();
+                    currentAIState = AIState.RoutineAct;
+                }
+                break;
+            case AIState.RoutineAct:
+                if(currentObjective.isUpsetting)
+                {
+                    currentUpset = currentObjective;
+                    currentAIState = AIState.UpsetGoto;
+                }
+                else if(!routineHasActed)
+                {
+                    routineHasActed = true;
+                    currentObjective.ExecuteRoutine(this);
+                }
+                break;
+            case AIState.RoutineWait:
+                if (listRoutine.Count > 1 && !routineHasQuit)
+                {
+                    countRoutineTime += Time.deltaTime;
+                    if (countRoutineTime >= timeToSpendInRoutineList[currentRoutineIndex])
+                    {
+                        routineHasQuit = true;
+                        currentObjective.QuitRoutine(this);
+                    }
+                    else
+                    {
+                        UpsetWaitHandling();
+                    }
+                }
+                break;
+            case AIState.UpsetGoto:
+                if (!hasReachedDestination())
+                {
+                    hasShrugged = false;
+                    upsetHasActed = false;
+                    MoveTo(target.position);
+                }
+                else
+                {
+                    StopMove();
+                    currentAIState = AIState.UpsetWait;
+                }
+                break;
+            case AIState.UpsetAct:
+                if (!upsetHasActed)
+                {
+                    upsetHasActed = true;
+                    DefaultAct();
+                }
+                break;
+            case AIState.UpsetWait:
+                if(!hasShrugged)
+                {
+                    hasShrugged = true;
+                    Shrug();
+                }
+                break;
         }
-        //SitDown();
     }
+    #endregion
 
-    public void FinishedSit()
+    void HandlingUpsettingElements()
     {
-        isAnimating = false;
-        hasSat = true;
-        hasActed = false;
-    }
+        if (GameManager.instance.listUpsetingElements.Count <= 0) return;
 
-    public void FinishedStand()
-    {
-        isAnimating = false;
-        hasSat = false;
-        //isMoving = true;
-        //anim.SetBool("IsMoving", true);
-        //GoToObjective();
-        //hasObjective = true;
-    }
-
-    public void IsCautious()
-    {
-        isAnimating = true;
-        anim.SetTrigger("Cautious");
-    }
-
-    public void Shrug()
-    {
-        isAnimating = true;
-        anim.SetTrigger("Shrug");
-    }
-
-    public void FinishedBlockAnimation()
-    {
-        isAnimating = false;
-    }
-
-    public void FinishedUse()
-    {
-        isAnimating = false;
-        objective.Action();
-        LookForObjective();
-    }
-
-    void UseElement()
-    {
-        anim.SetTrigger("Use");
-        isAnimating = true;
-    }
-
-    public void SitDown(Transform t)
-    {
-        agent.ResetPath();
-        transform.rotation = t.rotation;
-        transform.position = t.position;
-        isMoving = false;
-        isAnimating = true;
-        agent.ResetPath();
-        isMoving = false;
-        isComingBack = false;
-        anim.SetTrigger("SitDown");
-    }
-
-    public void SitUp()
-    {
-        isAnimating = true;
-        anim.SetTrigger("SitUp");
-    }
-
-    void HandlesRoutine()
-    {
-        if (hasObjective) return;
-
-        if(!hasReachedRoutine)
+        int maxAttention = 0;
+        float minDistance = 1000;
+        Element obj = null;
+        foreach (Element e in GameManager.instance.listUpsetingElements)
         {
-            agent.SetDestination(listRoutine[currentRoutineIndex].routinePosition);
-            if (hasReachedDestination())
-                hasReachedRoutine = true;
+            if(e.upsetAttentionLevel > currentAttentionLevel)
+            {
+                float distance = Vector3.Distance(e.transform.position, transform.position);
+                if(e.upsetAttentionLevel > maxAttention)
+                {
+                    maxAttention = e.upsetAttentionLevel;
+                }
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    if(e.upsetAttentionLevel >= maxAttention) obj = e;
+                }
+            }
+            if(obj && obj!=currentUpset)
+            {
+                upsetWaitObjective = true;
+                currentUpset = obj;
+                currentAttentionLevel = currentUpset.upsetAttentionLevel;
+            }
         }
-        else
+    }
+
+    void ReturnToRoutine()
+    {
+        currentUpset = null;
+        target = currentObjective.routineTransform;
+        currentAIState = AIState.RoutineGoTo;
+        currentAttentionLevel = currentObjective.basicAttentionLevel;
+    }
+
+    void UpsetWaitHandling()
+    {
+        if(upsetWaitObjective && currentUpset && currentAIState!=AIState.UpsetGoto)
         {
-            listRoutine[currentRoutineIndex].ExecuteRoutine(this);
+            upsetWaitObjective = false;
+            target = currentUpset.routineTransform;
+            currentAIState = AIState.UpsetGoto;
         }
+    }
+
+    bool HasQuit()
+    {
+        return routineHasQuit;
+    }
+
+    #region Movement
+    void MoveTo(Vector3 position)
+    {
+        anim.SetBool(hashMove, true);
+        agent.SetDestination(position);
+        UpsetWaitHandling();
     }
 
     bool hasReachedDestination()
@@ -129,108 +207,84 @@ public class HumanBehavior : MonoBehaviour
         return agent.hasPath && agent.destination != null && agent.remainingDistance <= agent.stoppingDistance;
     }
 
-    void QuitCurrentRoutine()
-    {
-        hasReachedRoutine = false;
-        listRoutine[currentRoutineIndex].QuitRoutine(this);
-    }
-
-    void CountRoutine()
-    {
-        if (!doesRoutine || !hasReachedRoutine) return;
-        // Timing handling
-        if (listRoutine.Count > 1)
-        {
-            countRoutineTime += Time.deltaTime;
-            if (countRoutineTime >= timeToSpendInRoutineList[currentRoutineIndex])
-            {
-                QuitCurrentRoutine();
-                
-                currentRoutineIndex++;
-                if (currentRoutineIndex >= listRoutine.Count) currentRoutineIndex = 0;
-                countRoutineTime = 0;
-                hasReachedRoutine = false;
-
-            }
-        }
-    }
-
-    void Update()
-    {
-        CountRoutine();
-
-        // handles the movement animation by calculating its velocity
-        if (agent.velocity.x > 1 || agent.velocity.z > 1)
-            isMoving = true;
-        else
-            isMoving = false;
-        anim.SetBool("IsMoving", isMoving);
-
-        // stops the AI logic until important animation finishes
-        if (isAnimating) return;
-
-        // Objective handling
-        LookForObjective(); // is there an objective to work on ?
-
-        if (hasObjective)
-        {
-            if(hasReachedRoutine)
-            {
-                QuitCurrentRoutine();
-            }
-            if (hasReachedDestination())
-            {
-                if (!hasActed)
-                {
-                    hasActed = true;
-                    UseElement();
-                }
-            }
-        }
-        else
-        {
-            HandlesRoutine();
-        }
-    }
-
-    void LookForObjective()
-    {
-        float minDistance =1000;
-        Element obj=null;
-        foreach (Element e in listElements)
-        {
-            //if (objective != null) break;
-            if (e.movesCharacter && e.isToggle())
-            {
-                float distance = Vector3.Distance(e.transform.position, transform.position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    obj = e;
-                }
-            }
-        }
-        if (obj == null) hasObjective = false;
-        if(lastObjective!=obj)
-        {
-            objective = obj;
-            lastObjective = obj;
-            if (objective != null) GoToObjective();
-        }
-    }
-
-    void GoToObjective()
+    void StopMove()
     {
         agent.ResetPath();
+        anim.SetBool(hashMove, false);
+    }
+    #endregion
 
-        if (hasSat)
-            SitUp();
-        else
+    #region Animation Triggers
+    public void DefaultAct()
+    {
+        anim.SetTrigger(hashDefaultAct);
+    }
+
+    public void SitDown()
+    {
+        transform.LookAt(currentObjective.transform.position);
+        anim.SetTrigger(hashSitDown);
+    }
+
+    public void SitUp()
+    {
+        anim.SetTrigger(hashSitUp);
+    }
+
+    public void Shrug()
+    {
+        anim.SetTrigger(hashShrug);
+    }
+    #endregion
+
+    #region animation events
+    public void InteractObjective()
+    {
+        if(currentAIState==AIState.RoutineAct || currentAIState == AIState.RoutineWait)
         {
-            hasObjective = true;
-            agent.SetDestination(objective.transform.position);
-            hasActed = false;
-            isComingBack = false;
+            currentObjective.Action();
+        }
+        else if(currentAIState == AIState.UpsetAct)
+        {
+            currentUpset.Action();
         }
     }
+
+    public void WaitRoutine()
+    {
+        currentAIState = AIState.RoutineWait;
+        UpsetWaitHandling();
+    }
+
+    public void NextRoutine()
+    {
+        currentRoutineIndex++;
+        if (currentRoutineIndex >= listRoutine.Count) currentRoutineIndex = 0;
+        countRoutineTime = 0;
+        target = listRoutine[currentRoutineIndex].routineTransform;
+        currentObjective = listRoutine[currentRoutineIndex];
+        currentAIState = AIState.RoutineGoTo;
+        UpsetWaitHandling();
+    }
+
+    public void ShrugHandling()
+    {
+        currentAIState = AIState.UpsetAct;
+    }
+
+    public void ObjectAct()
+    {
+        if(currentAIState == AIState.RoutineAct || currentAIState == AIState.RoutineWait)
+        {
+            if (!HasQuit())
+                WaitRoutine();
+            else
+                NextRoutine();
+        }
+        else if(currentAIState == AIState.UpsetAct)
+        {
+            ReturnToRoutine();
+        }
+    }
+    #endregion
 }

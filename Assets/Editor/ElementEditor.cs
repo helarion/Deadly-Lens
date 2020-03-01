@@ -12,9 +12,8 @@ public class ElementEditor : Editor
 
         if (GUILayout.Button("Activate"))
         {
-            element.Action();
+            element.ActionPlayer();
         }
-
     }
 }
 

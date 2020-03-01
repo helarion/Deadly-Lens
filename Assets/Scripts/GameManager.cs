@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Transform Elements;
     [SerializeField] RenderTexture cameraTexture;
     public bool isOnLaptop = false;
+    public List<Element> listSceneElements;
+    public List<Element> listUpsetingElements;
 
     public static GameManager instance = null;
 
@@ -34,6 +36,13 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         listener.parent = activeCamera.transform;
+
+        listSceneElements = new List<Element>();
+        Element[] temp = FindObjectsOfType<Element>();
+        foreach (Element e in temp)
+        {
+            listSceneElements.Add(e);
+        }
     }
 
     private void Update()
@@ -51,7 +60,6 @@ public class GameManager : MonoBehaviour
 
     public void SelectCamera(CameraController c)
     {
-        //activeCamera.ResetZoom();
         activeCamera.StopControl();
         activeCamera = c;
         listener.parent = c.transform;

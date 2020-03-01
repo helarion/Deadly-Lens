@@ -42,12 +42,12 @@ public class LaptopElement : Element
     public override void ExecuteRoutine(HumanBehavior human)
     {
         base.ExecuteRoutine(human);
-        human.IsCautious();
+        //human.IsCautious();
     }
 
     public override void QuitRoutine(HumanBehavior human)
     {
         base.QuitRoutine(human);
-        human.Shrug();
+        //human.Shrug();
     }
 }

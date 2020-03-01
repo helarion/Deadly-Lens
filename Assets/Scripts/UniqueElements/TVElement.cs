@@ -36,13 +36,12 @@ public class TVElement : Element
     public override void ExecuteRoutine(HumanBehavior human)
     {
         base.ExecuteRoutine(human);
-        if(!human.hasSat)human.SitDown(routineTransform);
+        human.SitDown();
     }
 
     public override void QuitRoutine(HumanBehavior human)
     {
         base.QuitRoutine(human);
-        //if (human.hasSat)
         human.SitUp();
     }
 }

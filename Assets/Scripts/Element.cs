@@ -7,12 +7,26 @@ public class Element : MonoBehaviour
 {
     [HideInInspector] public OutlineRegister outline;
     [SerializeField] public bool isTogglable = false;
-    [SerializeField] protected Transform routineTransform;
-    [HideInInspector] public Vector3 routinePosition;
+    [SerializeField] public Transform routineTransform;
+
+    public enum AnimState
+    {
+        RoutineGoTo,
+        RoutineAct,
+        RoutineWait,
+        UpsetAct,
+        UpsetGoto,
+        UpsetWait
+    }
+
+    public int upsetAttentionLevel = 1;
+    public int basicAttentionLevel = 1;
+    //[HideInInspector] public Vector3 routinePosition;
     [SerializeField] bool isInteractable = true;
     public bool movesCharacter = false;
     public bool toggleMoveValue = true;
     protected bool toggle = false;
+    public bool isUpsetting = false;
 
     public virtual void Start()
     {
@@ -22,7 +36,7 @@ public class Element : MonoBehaviour
             if (outline == null) outline = GetComponentInChildren<OutlineRegister>();
             outline.enabled = false;
         }
-        if(routineTransform)routinePosition = routineTransform.position;
+        //if(routineTransform)routinePosition = routineTransform.position;
     }
 
     public void Outline(bool b)
@@ -46,7 +60,17 @@ public class Element : MonoBehaviour
     private void OnMouseDown()
     {
         if (!isInteractable) return;
+        ActionPlayer();
+    }
+
+    public void ActionPlayer()
+    {
         Action();
+        if (movesCharacter && isToggle())
+        {
+            isUpsetting = true;
+            GameManager.instance.listUpsetingElements.Add(this);
+        }  
     }
 
     public virtual void Action()
@@ -55,6 +79,12 @@ public class Element : MonoBehaviour
         {
             if (toggle) TurnOff();
             else TurnOn();
+
+            if (isUpsetting)
+            {
+                isUpsetting = false;
+                GameManager.instance.listUpsetingElements.Remove(this);
+            }
         }
     }
 
@@ -80,6 +110,11 @@ public class Element : MonoBehaviour
     }
 
     public virtual void QuitRoutine(HumanBehavior human)
+    {
+
+    }
+
+    private void SelectAnimation()
     {
 
     }

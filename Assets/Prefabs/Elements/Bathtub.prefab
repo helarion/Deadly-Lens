@@ -34,6 +34,7 @@ Transform:
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children:
   - {fileID: 6483717204613959488}
+  - {fileID: 919388763855092490}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -193,8 +194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outline: {fileID: 0}
   isTogglable: 1
-  routineTransform: {fileID: 0}
-  routinePosition: {x: 0, y: 0, z: 0}
+  routineTransform: {fileID: 919388763855092490}
+  isInteractable: 1
   movesCharacter: 1
   toggleMoveValue: 1
 --- !u!65 &2434114471510141673
@@ -9759,6 +9760,36 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1 &5056160825452353293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 919388763855092490}
+  m_Layer: 9
+  m_Name: TargetTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &919388763855092490
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056160825452353293}
+  m_LocalRotation: {x: -0, y: -0.86602515, z: -0, w: 0.5000005}
+  m_LocalPosition: {x: 0.000000004768363, y: 0, z: -0.02999995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4000014245279604}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: -120.00001, z: 0}
 --- !u!1 &7282166521684567900
 GameObject:
   m_ObjectHideFlags: 0

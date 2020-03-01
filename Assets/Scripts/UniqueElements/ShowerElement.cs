@@ -32,12 +32,12 @@ public class ShowerElement : Element
     public override void ExecuteRoutine(HumanBehavior human)
     {
         base.ExecuteRoutine(human);
-
+        human.DefaultAct();
     }
 
     public override void QuitRoutine(HumanBehavior human)
     {
         base.QuitRoutine(human);
-
+        human.DefaultAct();
     }
 }

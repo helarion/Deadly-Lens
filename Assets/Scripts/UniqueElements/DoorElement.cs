@@ -37,14 +37,11 @@ public class DoorElement : Element
     public override void ExecuteRoutine(HumanBehavior human)
     {
         base.ExecuteRoutine(human);
-        if(!human.hasSat)human.SitDown(routineTransform);
     }
 
     public override void QuitRoutine(HumanBehavior human)
     {
         base.QuitRoutine(human);
-        //if (human.hasSat)
-        human.SitUp();
     }
 
     IEnumerator OpenDoor()

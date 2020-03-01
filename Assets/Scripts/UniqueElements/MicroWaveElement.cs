@@ -27,4 +27,16 @@ public class MicroWaveElement : Element
         l.enabled = false;
         source.enabled = false;
     }
+
+    public override void ExecuteRoutine(HumanBehavior human)
+    {
+        base.ExecuteRoutine(human);
+        human.DefaultAct();
+    }
+
+    public override void QuitRoutine(HumanBehavior human)
+    {
+        base.QuitRoutine(human);
+        human.DefaultAct();
+    }
 }

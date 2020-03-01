@@ -15,11 +15,58 @@ MonoBehaviour:
   brickName: Assets/HumanBehavior.asset
   xml: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<BehaviorBricks xmlns:ref=\"urn:padaone\"
     version=\"1.0\">\r\n  <BehaviorTree id=\"0\" />\r\n  <runtimeInfo>\r\n    <BehaviorTree
-    id=\"0\" guid=\"210d305420ec06446813609b0e8af9a9\" nextId=\"1\">\r\n      <inputParams
-    />\r\n      <outputParams />\r\n      <localParams />\r\n    </BehaviorTree>\r\n
+    id=\"0\" guid=\"210d305420ec06446813609b0e8af9a9\" nextId=\"8\">\r\n      <root>\r\n
+    \       <RepeatUntilSuccess id=\"5\" />\r\n      </root>\r\n      <inputParams>\r\n
+    \       <inputValues>\r\n          <entry name=\"targetLocation\" type=\"UnityEngine.Vector3\"
+    isBlackboard=\"False\" value=\"0 0 0\" />\r\n        </inputValues>\r\n      </inputParams>\r\n
+    \     <outputParams />\r\n      <localParams />\r\n    </BehaviorTree>\r\n    <RepeatUntilSuccess
+    id=\"5\">\r\n      <child>\r\n        <ActionNode id=\"2\" />\r\n      </child>\r\n
+    \     <inputParams />\r\n      <outputParams />\r\n      <localParams />\r\n    </RepeatUntilSuccess>\r\n
+    \   <ActionNode id=\"2\" action=\"Navigation/MoveToPosition\">\r\n      <inputParams>\r\n
+    \       <inputValues>\r\n          <entry name=\"target\" type=\"UnityEngine.Vector3\"
+    isBlackboard=\"True\" blackboard=\"targetLocation\" />\r\n        </inputValues>\r\n
+    \     </inputParams>\r\n      <outputParams />\r\n      <localParams />\r\n    </ActionNode>\r\n
     \ </runtimeInfo>\r\n  <editorInfo>\r\n    <BehaviorTree id=\"0\" _name=\"HumanBehavior\"
-    _description=\"\" _removeIfClosed=\"False\">\r\n      <_rootList />\r\n      <_nodes>\r\n
-    \       <nodes />\r\n      </_nodes>\r\n    </BehaviorTree>\r\n  </editorInfo>\r\n</BehaviorBricks>"
-  zoom: 1
+    _description=\"\" _removeIfClosed=\"False\">\r\n      <_rootList>\r\n        <elem>\r\n
+    \         <ActionNode id=\"2\" />\r\n        </elem>\r\n        <elem>\r\n          <ActionNode
+    id=\"4\" />\r\n        </elem>\r\n        <elem>\r\n          <RepeatUntilSuccess
+    id=\"5\" />\r\n        </elem>\r\n        <elem>\r\n          <ActionNode id=\"7\"
+    />\r\n        </elem>\r\n      </_rootList>\r\n      <_nodes>\r\n        <nodes>\r\n
+    \         <ActionNode id=\"7\" />\r\n          <ActionNode id=\"2\" />\r\n          <ActionNode
+    id=\"4\" />\r\n          <RepeatUntilSuccess id=\"5\" />\r\n        </nodes>\r\n
+    \     </_nodes>\r\n    </BehaviorTree>\r\n    <RepeatUntilSuccess id=\"5\">\r\n
+    \     <_data>\r\n        <data breakpoint=\"0\" selected=\"False\" position=\"150.238
+    560.6785\" name=\"Repeat Until Success\" description=\"Repeats the execution of
+    its child node until it success\" cardinality=\"1\" hasParent=\"False\">\r\n          <BehaviorTree
+    id=\"0\" />\r\n          <RepeatUntilSuccess id=\"5\" />\r\n        </data>\r\n
+    \     </_data>\r\n    </RepeatUntilSuccess>\r\n    <ActionNode id=\"2\">\r\n      <_data>\r\n
+    \       <data breakpoint=\"0\" selected=\"False\" position=\"173.83 768.9799\"
+    name=\"Navigation/MoveToPosition\" description=\"Moves the game object to a given
+    position by using a NavMeshAgent\" cardinality=\"0\" hasParent=\"True\">\r\n          <BehaviorTree
+    id=\"0\" />\r\n          <ActionNode id=\"2\" />\r\n          <RepeatUntilSuccess
+    id=\"5\" />\r\n        </data>\r\n      </_data>\r\n    </ActionNode>\r\n  </editorInfo>\r\n
+    \ <runtimeInfo>\r\n    <ActionNode id=\"4\" action=\"GameObject/LookAt\">\r\n
+    \     <inputParams>\r\n        <inputValues>\r\n          <entry name=\"target\"
+    type=\"UnityEngine.GameObject\" isBlackboard=\"False\" />\r\n        </inputValues>\r\n
+    \     </inputParams>\r\n      <outputParams />\r\n      <localParams />\r\n    </ActionNode>\r\n
+    \   <ActionNode id=\"7\" action=\"Animation/PlayAnimation\">\r\n      <inputParams>\r\n
+    \       <inputValues>\r\n          <entry name=\"animationClip\" type=\"UnityEngine.AnimationClip\"
+    isBlackboard=\"False\" />\r\n          <entry name=\"crossFadeTime\" type=\"System.Single\"
+    isBlackboard=\"False\" value=\"0\" />\r\n          <entry name=\"animationWrap\"
+    type=\"UnityEngine.WrapMode\" isBlackboard=\"False\" value=\"Default\" />\r\n
+    \         <entry name=\"waitUntilFinish\" type=\"System.Boolean\" isBlackboard=\"False\"
+    value=\"False\" />\r\n        </inputValues>\r\n      </inputParams>\r\n      <outputParams
+    />\r\n      <localParams />\r\n    </ActionNode>\r\n  </runtimeInfo>\r\n  <editorInfo>\r\n
+    \   <ActionNode id=\"4\">\r\n      <_data>\r\n        <data breakpoint=\"0\" selected=\"False\"
+    position=\"603.571 509.0119\" name=\"GameObject/LookAt\" description=\"Rotates
+    the transform so the forward vector of the game object points at target's current
+    position\" cardinality=\"0\" hasParent=\"False\">\r\n          <BehaviorTree id=\"0\"
+    />\r\n          <ActionNode id=\"4\" />\r\n        </data>\r\n      </_data>\r\n
+    \   </ActionNode>\r\n    <ActionNode id=\"7\">\r\n      <_data>\r\n        <data
+    breakpoint=\"0\" selected=\"True\" position=\"155.5827 221.6667\" name=\"Animation/PlayAnimation\"
+    description=\"Plays an animation in the game object\" cardinality=\"0\" hasParent=\"False\">\r\n
+    \         <BehaviorTree id=\"0\" />\r\n          <ActionNode id=\"7\" />\r\n        </data>\r\n
+    \     </_data>\r\n    </ActionNode>\r\n  </editorInfo>\r\n</BehaviorBricks>"
+  zoom: 0.6
   subslist: []
   _guid: 210d305420ec06446813609b0e8af9a9
