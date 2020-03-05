@@ -21,11 +21,14 @@ public class HumanBehavior : MonoBehaviour
     [Header("Routine")]
     [SerializeField] List<Element> listRoutine;
     [SerializeField] List<int> timeToSpendInRoutineList;
-    bool routineHasActed = false;
-    bool routineHasQuit = false;
-    bool upsetHasActed = false;
-    bool hasShrugged = false;
-    bool hasFixed = false;
+
+    bool animStarted = false;
+
+    //bool routineHasActed = false;
+    //bool routineHasQuit = false;
+    //bool upsetHasActed = false;
+    //bool hasShrugged = false;
+    //bool hasFixed = false;
 
     int currentRoutineIndex = 0;
     float countRoutineTime = 0;
@@ -64,6 +67,34 @@ public class HumanBehavior : MonoBehaviour
         SceneLinkedSMB<HumanBehavior>.Initialise(anim, this);
     }
 
+    void ChangeState(AIState newState)
+    {
+        currentAIState = newState;
+        Activate();
+    }
+
+    void TriggerAnimation(int animHash)
+    {
+        if(!animStarted)
+        {
+            animStarted = true;
+            anim.SetTrigger(animHash);
+        }
+    }
+
+    void ResetTriggerAnimation()
+    {
+        animStarted=false;
+    }
+
+    void Activate()
+    {
+        switch (currentAIState)
+        {
+
+        }
+    }
+
     void Update()
     {
         HandlingUpsettingElements();
@@ -72,14 +103,15 @@ public class HumanBehavior : MonoBehaviour
             case AIState.RoutineGoTo:
                 if(!hasReachedDestination())
                 {
-                    routineHasActed = false;
-                    routineHasQuit = false;
+                    //routineHasActed = false;
+                    //routineHasQuit = false;
                     MoveTo(target.position);
                 }
                 else
                 {
                     StopMove();
-                    currentAIState = AIState.RoutineAct;
+                    ChangeState(AIState.RoutineAct);
+                    //currentAIState = ;
                 }
                 break;
             case AIState.RoutineAct:

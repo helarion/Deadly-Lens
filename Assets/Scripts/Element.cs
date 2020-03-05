@@ -11,12 +11,8 @@ public class Element : MonoBehaviour
 
     public enum AnimState
     {
-        RoutineGoTo,
-        RoutineAct,
-        RoutineWait,
-        UpsetAct,
-        UpsetGoto,
-        UpsetWait
+        StandIdle,
+
     }
 
     public int upsetAttentionLevel = 1;
