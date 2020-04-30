@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtonElement : Element
+public class ButtonElement : InteractableElement
 {
-    [SerializeField] Element buttonTarget;
+    [SerializeField] DynamicElement buttonTarget;
     AudioSource source;
 
     public override void Start()

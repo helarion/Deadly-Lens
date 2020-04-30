@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotElement : Element
+public class RobotElement : InteractableElement
 {
     RobotController controller;
 

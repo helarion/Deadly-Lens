@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MicroWaveElement : Element
+public class MicroWaveElement : InteractableElement
 {
     Light l;
     AudioSource source;

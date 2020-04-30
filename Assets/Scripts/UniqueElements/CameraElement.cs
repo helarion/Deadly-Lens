@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraElement : Element
+public class CameraElement : InteractableElement
 {
     CameraController controller;
 

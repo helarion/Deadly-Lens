@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LampElement : Element
+public class LampElement : InteractableElement
 {
     Light l;
 

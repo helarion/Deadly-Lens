@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShowerElement : Element
+public class ShowerElement : InteractableElement
 {
     ParticleSystem water;
     AudioSource source;

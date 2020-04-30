@@ -115,7 +115,7 @@ public class HumanBehavior : MonoBehaviour
                 }
                 break;
             case AIState.RoutineAct:
-                if(currentObjective.isUpsetting)
+                if(currentObjective.IsUpsetting())
                 {
                     currentUpset = currentObjective;
                     currentAIState = AIState.UpsetGoto;

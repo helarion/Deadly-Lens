@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TVElement : Element
+public class TVElement : InteractableElement
 {
     SpriteRenderer sr;
     Light l;

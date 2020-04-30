@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorElement : Element
+public class DoorElement : DynamicElement
 {
     [SerializeField] float doorSize;
     [SerializeField] float openSpeed = 0.5f;

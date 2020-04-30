@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaptopElement : Element
+public class LaptopElement : InteractableElement
 {
     SpriteRenderer sr;
     Light l;
